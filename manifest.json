@@ -5,7 +5,7 @@
 
     "description": "Allows user to highlight information on webpage and search later",
 
-    "permissions": ["storage", "declarativeContent", "activeTab"],
+    "permissions": ["storage", "declarativeContent", "activeTab", "tabs"],
 
     // "background": {
     // 	"scripts": ["background.js"],
@@ -19,7 +19,7 @@
         }
     ],
 
-    "page_action": {
+    "browser_action": {
     	"default_popup": "popup.html",
     	"default_icon": {
     		"16": "images/get_started16.png",

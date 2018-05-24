@@ -13,6 +13,7 @@ function doSomething() {
 }
 
 function highlight() {
+
 	var selection = document.getSelection();
 	if (selection.toString() !== "") {
 		var range = selection.getRangeAt(0);
