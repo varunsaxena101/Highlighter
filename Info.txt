@@ -1,0 +1,8 @@
+Express:
+From what I understand, express is a framework that allows you to easily make APIs. It makes it easy to handle the HTTP CRUD methods.
+
+MongoClient:
+Used to interact with the mongoDB database, which apparently you can't interact with on its own. mLab is used to set up a mongoDB database and provides a visual of the database
+
+body-parser:
+used for a specific form type so that the api can read the text
