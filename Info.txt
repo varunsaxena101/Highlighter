@@ -1,8 +1,12 @@
-Express:
-From what I understand, express is a framework that allows you to easily make APIs. It makes it easy to handle the HTTP CRUD methods.
+Plan for frontend extension:
+1. There will be a JSON object for each page with two fields:
+    - url: (url)
+    - highlights: [(list of highlighted strings of text)]
+2. After highlighting some text, a popup will appear over the text allowing for highlight
+    - If highlight is not wanted, another part of the page is clicked and the popup goes away
+    - If the highlight is wanted, the button in the popup is clicked, and the string of text is added
+      to the hashset/array
+    - The API is then called to update the database
 
-MongoClient:
-Used to interact with the mongoDB database, which apparently you can't interact with on its own. mLab is used to set up a mongoDB database and provides a visual of the database
-
-body-parser:
-used for a specific form type so that the api can read the text
+3. After selecting text, bring up context menu with option to highlight
+    - later add option to clear/change color of highlight

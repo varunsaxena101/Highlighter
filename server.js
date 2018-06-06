@@ -7,11 +7,9 @@ const app = express();
 
 const port = 3000;
 
-app.use(bodyParser.urlencoded({extended: true}));
-console.log("line 11");
+app.use(bodyParser.urlencoded({extended: false}));
 
 MongoClient.connect(db.url, (err, database) => {
-	console.log("line 14");
 	if (err) return console.log(err);
 
 	require('./app/routes')(app, database);

@@ -16,24 +16,47 @@ saveButton.onclick = function() {
 		});
 		*/
 	
+		var url = tabs[0].url;
+		console.log(url);
 		var xhttp = new XMLHttpRequest();
+		var payload = { addrURL: url, 
+		highlight: [] };
+		console.log(payload);
 
 		xhttp.onreadystatechange = function() {
-		    if (this.readyState == 4 && this.status == 200) {
-		       console.log(xhttp.responseText);
-		    }
+			console.log('callback called');
+			if (xhttp.readyState == XMLHttpRequest.DONE) {
+				console.log(xhttp.responseText);
+			}
 		};
 
-		xhttp.open("GET", "localhost:3000/urls");
-		xhttp.send();
+		xhttp.open('POST', 'http://localhost:3000/urls');
+		xhttp.setRequestHeader('Content-Type', 'application/json');
+		//xhttp.send(new URLSearchParams.append('url', url));
+		xhttp.send(JSON.stringify(payload));
 
 	});
 };
 
 getButton.onclick = function() {
+	/*
 	var url = chrome.storage.sync.get(['url'], function(result) {
 		console.log("You have gotten: " + result.url);
 	});
+	*/
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == XMLHttpRequest.DONE) {
+            //document.getElementById('status').value = xhttp.status;
+            //document.getElementById('status').innerHTML = xhttp.status;
+            //document.getElementById('response').innerHTML = xhttp.responseText;
+        }
+	  };
+	  
+      xhttp.open("GET", "/notes/5b0f58ef03ccbdba8fb34264");
+      xhttp.setRequestHeader("Content-Type", "application\/x-www-form-urlencoded");
+	  xhttp.send();
+
 };
 
 loginButton.onclick = function() {

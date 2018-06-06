@@ -5,12 +5,12 @@
 
     "description": "Allows user to highlight information on webpage and search later",
 
-    "permissions": ["storage", "declarativeContent", "activeTab", "tabs"],
+    "permissions": ["storage", "declarativeContent", "activeTab", "tabs", "contextMenus"],
 
-    // "background": {
-    // 	"scripts": ["background.js"],
-    // 	"persistent": false
-    // },
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
 
     "content_scripts": [
         {
@@ -28,8 +28,6 @@
     		"128": "images/get_started128.png"
     	}
     },
-
-    // "options_page": "options.html",
 
     "icons": {
     	"16": "images/get_started16.png",
