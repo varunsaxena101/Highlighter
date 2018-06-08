@@ -11,8 +11,10 @@ searchButton.onclick = function() {
 	var xhttp = new XMLHttpRequest();
 
 	xhttp.onreadystatechange = function() {
-		if (xhttp.status == XMLHttpRequest.DONE) {
+		if (xhttp.readyState == XMLHttpRequest.DONE) {
 			console.log(xhttp.responseText);
+			var response = JSON.parse(xhttp.responseText);
+			console.log(response.urlList);
 		}
 	};
 

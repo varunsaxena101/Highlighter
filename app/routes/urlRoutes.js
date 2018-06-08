@@ -41,8 +41,8 @@ module.exports = function (app, db) {
 
 		var query = req.query.search;
 
-		var responseList = {'response': ['www.nba.com', 'www.cnn.com']};
-		res.send(responseList);
+		var response = { 'urlList': ['www.nba.com', 'www.cnn.com'] };
+		res.send(response);
 	});
 
 };
