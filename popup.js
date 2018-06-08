@@ -2,6 +2,28 @@ let saveButton = document.getElementById('save');
 let getButton = document.getElementById('get');
 let loginButton = document.getElementById('login');
 
+let searchButton  = document.getElementById('search');
+let textArea = document.getElementById('searchTextArea');
+
+searchButton.onclick = function() {
+	var searchText = textArea.value;
+	console.log(searchText)
+	var xhttp = new XMLHttpRequest();
+
+	xhttp.onreadystatechange = function() {
+		if (xhttp.status == XMLHttpRequest.DONE) {
+			console.log(xhttp.responseText);
+		}
+	};
+
+	var params = "search=" + searchText;
+	var targetURL = 'http://localhost:3000/urls?' + params; 
+	xhttp.open("GET", targetURL);
+	xhttp.setRequestHeader('Content-Type', 'application/json');
+	xhttp.send();
+	
+};
+
 saveButton.onclick = function() {
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		//chrome.tabs.executeScript(tabs[0].id, {code: "document.body.style.backgroundColor = 'yellow'"});
@@ -62,3 +84,4 @@ getButton.onclick = function() {
 loginButton.onclick = function() {
 	window.open('login.html', '_blank');
 };
+

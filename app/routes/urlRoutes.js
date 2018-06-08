@@ -26,7 +26,8 @@ module.exports = function (app, db) {
 
 	});
 
-	app.get('/urls/:id', (req, res) => {
+	app.get('/urls', (req, res) => {
+		/*
 		const id = req.params.id;
 		const details = { '_id': new ObjectID(id) };
 		db.collection('url').findOne(details, (err, item) => {
@@ -36,6 +37,12 @@ module.exports = function (app, db) {
 				res.send(item);
 			}
 		});
+		*/
+
+		var query = req.query.search;
+
+		var responseList = {'response': ['www.nba.com', 'www.cnn.com']};
+		res.send(responseList);
 	});
 
 };
