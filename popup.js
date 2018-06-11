@@ -15,6 +15,8 @@ searchButton.onclick = function() {
 			console.log(xhttp.responseText);
 			var response = JSON.parse(xhttp.responseText);
 			console.log(response.urlList);
+
+			populateList(response.urlList);
 		}
 	};
 
@@ -86,4 +88,17 @@ getButton.onclick = function() {
 loginButton.onclick = function() {
 	window.open('login.html', '_blank');
 };
+
+function populateList(list) {
+	var ul = document.getElementById('urlList');
+	for (var i = 0; i < list.length; i++) {
+		var li = document.createElement("li");
+		var a = document.createElement("a");
+		a.setAttribute("href", list[i]);
+		a.setAttribute("target", "_blank");
+		a.innerHTML = list[i];
+		li.appendChild(a);
+		ul.appendChild(li);
+	}
+}
 
