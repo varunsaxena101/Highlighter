@@ -52,17 +52,17 @@ module.exports = function (app, db) {
 		});
 
 		var item1 = {
-			"addrURL": "https://en.wikipedia.org/wiki/Apache_Solr",
-			"title": "Apache Solr",
-			"highlight": "written in Java, from the Apache Lucene project. Its major features include full-text search, hit highlighting, faceted search, real-time indexing, dynamic clustering, database integration, NoSQL features[2] and rich document (e.g., Word, PDF) handling"
+			"addrURL": "https://www.theverge.com/2018/6/11/17448702/ford-self-driving-car-food-delivery-miami-postmates",
+			"title": "Ford\u2019s \u2018self-driving\u2019 vans are now delivering food in Miami - The Verge",
+			"highlight": "Ford has been using Miami as a test bed for its self-driving vehicles since earlier this year. And more recently, the auto giant joined with Postmates to see how people ordering takeout food would interact with an autonomous delivery van."
 		};
 
 		test.push(item1);
 
 		var item2 = {
-			"addrURL": "https://stackoverflow.com/questions/1057059/how-to-get-the-title-of-html-page-with-javascript",
-			"title": "How to get the title of a page",
-			"highlight": "How can I get the title of an"
+			"addrURL": "https://medium.com/@tommycm/terrifying-fish-from-hell-an-essay-about-lampreys-733226c8e14a",
+			"title": "Lamprey: The World\u2019s Most Terrifying Fish \u2013 Tom Mitchell \u2013 Medium",
+			"highlight": "A nice retort, sure, but less comprehensible if you\u2019ve ever seen a lamprey. There are few animals less deserving of an owner\u2019s tears. In fact, the only connection you\u2019re likely to make with one of these fish is if it sinks its many hundreds of teeth into your flesh."
 		}
 
 		test.push(item2);
@@ -70,7 +70,7 @@ module.exports = function (app, db) {
 		var item3 = {
 			"addrURL": "http://www.nba.com/article/2018/06/12/report-toronto-raptors-hire-nick-nurse-new-coach",
 			"title": "Reports: Toronto Raptors hiring Nick Nurse as next coach | NBA.com",
-			"highlight": "Toronto Raptors didn't have to look far to name their next coach"
+			"highlight": "The Toronto Raptors didn't have to look far to name their next coach. ESPN's Adrian Wojnarowski reports that the Raptors are hiring current Raptors assistant Nick Nurse as their new coach."
 		}
 
 		test.push(item3);
