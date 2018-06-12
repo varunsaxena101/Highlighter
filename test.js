@@ -10,9 +10,9 @@ searchButton.onclick = function() {
 		if (xhttp.readyState == XMLHttpRequest.DONE) {
 			console.log(xhttp.responseText);
 			var response = JSON.parse(xhttp.responseText);
-			console.log(response.urlList);
-
-			populateList(response.urlList);
+			console.log(response);
+			console.log(typeof response);
+			populateList(response);
 		}
 	};
 
@@ -29,9 +29,9 @@ function populateList(list) {
 	for (var i = 0; i < list.length; i++) {
 		var li = document.createElement("li");
 		var a = document.createElement("a");
-		a.setAttribute("href", list[i]);
+		a.setAttribute("href", list[i].addrURL);
 		a.setAttribute("target", "_blank");
-		a.innerHTML = list[i];
+		a.innerHTML = list[i].title;
 		li.appendChild(a);
 		ul.appendChild(li);
 	}

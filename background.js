@@ -17,7 +17,8 @@ chrome.contextMenus.onClicked.addListener(function(clickInfo) {
             console.log(url);
             var xhttp = new XMLHttpRequest();
             var payload = { addrURL: url, 
-            highlight: clickInfo.selectionText };
+                title: tabs[0].title,
+                highlight: clickInfo.selectionText };
             console.log(payload);
     
             xhttp.onreadystatechange = function() {
