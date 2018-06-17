@@ -12,7 +12,7 @@ searchButton.onclick = function() {
 			var response = JSON.parse(xhttp.responseText);
 			console.log(response);
 			console.log(typeof response);
-			populateList(response);
+			populateList(response, searchText);
 		}
 	};
 
@@ -24,15 +24,35 @@ searchButton.onclick = function() {
 	
 };
 
-function populateList(list) {
+function populateList(list, searchText) {
 	var ul = document.getElementById('urlList');
 	for (var i = 0; i < list.length; i++) {
 		var li = document.createElement("li");
 		var a = document.createElement("a");
+		var p = document.createElement("p");
 		a.setAttribute("href", list[i].addrURL);
 		a.setAttribute("target", "_blank");
 		a.innerHTML = list[i].title;
+		p.innerHTML = highlightWords(list[i].highlight, searchText);
 		li.appendChild(a);
+		li.appendChild(p);
 		ul.appendChild(li);
 	}
+}
+
+function highlightWords(str, search) {
+	var i = str.search(new RegExp(search, 'i'));
+	if (i != -1) {
+		str = str.substring(0, i) + "<span class='highlight'>" + str.substring(i, i + search.length) + "</span>" + str.substring(i + search.length);
+	} else {
+		var strArr = search.split(" ");
+		for (var a = 0; a < strArr.length; a++) {
+			var i = str.search(new RegExp(strArr[a], 'i'));
+			if (i != -1) {
+				str = str.substring(0, i) + "<span class='highlight'>" + str.substring(i, i + strArr[a].length) + "</span>" + str.substring(i + strArr[a].length);
+			}
+		}
+	}
+	
+	return str;
 }
