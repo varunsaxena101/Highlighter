@@ -1,11 +1,22 @@
 {
     "name": "Highlighter",
 
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhSlr0yZlwtkYtrfzfohREWJMtkjyLc93YiTvBBDYXIASh5slmF/PMipIZNJtVaSIEspRjv3iFpi8oAPpNJeJSga94ONVaZ33INxhQenZXMqR483HVp6N8CbpRg2a5lTJx68VVj3n7vX77EHHXFXQpt9RDN5mGovoFEZ71QhlOyavGeCMI9IxMn6abtB1ZhiWyuwn4GUCn/o4aJurpi6OUH9ZWkSmsfqjTf3bKFOGum5Sie5afcq6caeHmzEzCrqwtKe/r7s6N1VHwJ/NqCVYInHOo5fjoDHK8tpa7LRhdmQGEWKqWxfxS0U1PrZefpug/nYWRDthDiPRnonJ2iYsKQIDAQAB",
+
+    "oauth2": {
+        "client_id": "889952242965-dp4encv89d30ut5beer3hmbbi5cvkuom.apps.googleusercontent.com",
+        "scopes":[
+            "https://www.googleapis.com/auth/contacts.readonly",
+            "profile",
+            "https://www.googleapis.com/auth/plus.login"
+        ]
+    },
+
     "version": "1.0",
 
     "description": "Allows user to highlight information on webpage and search later",
 
-    "permissions": ["storage", "declarativeContent", "activeTab", "tabs", "contextMenus"],
+    "permissions": ["storage", "declarativeContent", "activeTab", "tabs", "contextMenus", "identity"],
 
     "background": {
         "scripts": ["background.js"],

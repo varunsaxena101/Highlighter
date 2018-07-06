@@ -1,5 +1,5 @@
 window.onload = function () {
-    document.querySelector('button').addEventListener('click', function () {
+    document.querySelector('#loginButton').addEventListener('click', function () {
         chrome.identity.getAuthToken({ interactive: true }, function (token) {
             let init = {
                 method: 'GET',
@@ -12,7 +12,7 @@ window.onload = function () {
             };
             fetch(
                 /*'https://people.googleapis.com/v1/contactGroups/all?maxMembers=20&key=AIzaSyC3_3dT8WIHlTm2tIWLS8XfQvKrBz8BPQY',*/
-                'https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos&key=AIzaSyC3_3dT8WIHlTm2tIWLS8XfQvKrBz8BPQY',
+                'https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos&key=AIzaSyCjOXjhZ-46NNQIYE5R0TgG6XvBrWd5JMk',
                 init)
                 .then((response) => response.json())
                 .then(function (data) {
