@@ -2,31 +2,21 @@
   <html>
     <head>
       <link rel="stylesheet" href="popup.css">
-      <style>
-        /*
-        button {
-          height: 30px;
-          width: 30px;
-          outline: none;
-        }
-        */
-      </style>
     </head>
     <body>
-      <!--
-      <button id="save">save</button>
-      <button id="get">get</button>
-      <button id="login">login</button>
-      -->
+        <div id="pictureDiv">
+            <img src="images/get_started128.png" alt="Avatar" id="picture" class="logo">
+        </div>
 
-      <textarea id="searchTextArea" rows="1" cols="50" placeholder="Search for a save..."></textarea> 
-      <br>
-      <button id="search">Search</button>
-      <br>
-      <p><a href="test.html" target="_blank">click here to search</a></p>
-      <ul id=urlList>
+            <hr>
         
-      </ul>
-      <script src="popup.js"></script>
+        <div id="buttons">
+            <p>Login into Google to Begin!</p>
+            
+            <button id="loginButton">Login With Google</button>
+            
+        </div>
+
+        <script src="oauth.js"></script>
     </body>
   </html>

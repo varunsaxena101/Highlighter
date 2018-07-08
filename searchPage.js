@@ -26,6 +26,10 @@ searchButton.onclick = function() {
 
 function populateList(list, searchText) {
 	var ul = document.getElementById('urlList');
+
+	//clear the contents of the last search
+	ul.innerHTML = "";
+
 	for (var i = 0; i < list.length; i++) {
 		var li = document.createElement("li");
 		var a = document.createElement("a");

@@ -1,4 +1,11 @@
 window.onload = function () {
+
+    var userAuthToken;
+
+    var userID = undefined;
+    var displayName = undefined;
+    var imgSrc = undefined;
+    
     document.querySelector('#loginButton').addEventListener('click', function () {
         chrome.identity.getAuthToken({ interactive: true }, function (token) {
             let init = {
