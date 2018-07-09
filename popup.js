@@ -15,6 +15,7 @@ loginButton.addEventListener("click", function () {
 var logoutButton = document.createElement("button");
 logoutButton.innerHTML = "Log out";
 logoutButton.addEventListener("click", function () {
+    chrome.storage.local.remove(['givenName', 'userID', 'imgSRC']);
     renderLoggedOut();
 });
 
@@ -62,8 +63,15 @@ function renderLoggedOut() {
     loggedIn = false;
 }
 
-if (loggedIn) {
-    renderLoggedIn();
-} else {
+initialize().then(function (result) {
+    console.log(result);
+    loggedIn = true;
+    result = [result.givenName, result.userID, result.imgSRC];
+    console.log(result);
+    renderLoggedIn(result);
+}).catch(function (error) {
+    console.log(error);
+    loggedIn = false;
     renderLoggedOut();
-}
+});
+

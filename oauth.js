@@ -32,7 +32,7 @@ function loginUser() {
                     console.log(imgSrc);
 
                     //set user info in chrome storage
-                    // chrome.storage.local.set({'giveName': givenName, 'userID': userID, 'imgSRC': imgSrc});
+                    chrome.storage.local.set({'givenName': givenName, 'userID': userID, 'imgSRC': imgSrc});
                     // chrome.storage.local.get(['givenName', 'userID', 'imgSRC'], function(result) {
                     //     console.log(result);
                     // });
