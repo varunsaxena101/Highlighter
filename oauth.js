@@ -1,13 +1,10 @@
-window.onload = function () {
+var userAuthToken;
 
-    var userAuthToken;
-
-    var userID = undefined;
-    var displayName = undefined;
-    var imgSrc = undefined;
-    
-    document.querySelector('#loginButton').addEventListener('click', function () {
+function loginUser() {
+    return new Promise(function(resolve, reject) {
         chrome.identity.getAuthToken({ interactive: true }, function (token) {
+            console.log(token);
+            userAuthToken = token;
             let init = {
                 method: 'GET',
                 async: true,
@@ -18,15 +15,55 @@ window.onload = function () {
                 'contentType': 'json'
             };
             fetch(
-                /*'https://people.googleapis.com/v1/contactGroups/all?maxMembers=20&key=AIzaSyC3_3dT8WIHlTm2tIWLS8XfQvKrBz8BPQY',*/
                 'https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos&key=AIzaSyCjOXjhZ-46NNQIYE5R0TgG6XvBrWd5JMk',
                 init)
                 .then((response) => response.json())
                 .then(function (data) {
                     console.log(data);
-                    console.log(data.names[0].displayName);
-                    console.log(data.names[0].metadata.source.id);
+
+                    var givenName = data.names[0].givenName;
+                    var userID = 'google:' + data.names[0].metadata.source.id;
+                    var imgSrc = data.photos[0].url;
+
+                    userInfo = [givenName, userID, imgSrc];
+
+                    console.log(givenName);
+                    console.log(userID);
+                    console.log(imgSrc);
+
+                    //set user info in chrome storage
+                    // chrome.storage.local.set({'giveName': givenName, 'userID': userID, 'imgSRC': imgSrc});
+                    // chrome.storage.local.get(['givenName', 'userID', 'imgSRC'], function(result) {
+                    //     console.log(result);
+                    // });
+
+                    if (userInfo) {
+                        resolve(userInfo);
+                    } else {
+                        reject(Error("There was no userInfo"));
+                    }
+
+                    let init = {
+                        method: 'GET',
+                        async: true,
+                        headers: {
+                            Authorization: 'Bearer ' + userAuthToken,
+                            'Content-Type': 'application/json'
+                        },
+                        'contentType': 'json'
+                    };
+                    fetch(
+                        'https://accounts.google.com/o/oauth2/revoke?token=' + userAuthToken,
+                        init)
+                        .then((response) => response.json())
+                        .then(function (data) {
+                            console.log(data);
+                        });
+
+                    chrome.identity.removeCachedAuthToken({ 'token': userAuthToken }, function () {
+                        userAuthToken = undefined;
+                    });
                 });
         });
     });
-};
+}
