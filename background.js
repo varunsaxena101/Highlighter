@@ -1,3 +1,26 @@
+//chrome storage sends an empty object if nothing is found
+function isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
+
+function getUserInfo() {
+    return new Promise(function(resolve, reject) {
+        chrome.storage.local.get(['givenName', 'userID', 'imgSRC'], function(result) {
+            console.log(result);
+            console.log(isEmpty(result));
+            if (!isEmpty(result)) {
+                resolve(result);
+            } else {
+                reject(Error('User is not logged in'));
+            }
+        });
+    });
+}
+
 var contextMenuItem = {
     "id": "save",
     "title": "Save for Search",
@@ -16,22 +39,30 @@ chrome.contextMenus.onClicked.addListener(function(clickInfo) {
             var url = tabs[0].url;
             console.log(url);
             var xhttp = new XMLHttpRequest();
-            var payload = { addrURL: url, 
-                title: tabs[0].title,
-                highlight: clickInfo.selectionText };
-            console.log(payload);
-    
-            xhttp.onreadystatechange = function() {
-                console.log('callback called');
-                if (xhttp.readyState == XMLHttpRequest.DONE) {
-                    console.log(xhttp.responseText);
-                }
-            };
-    
-            xhttp.open('POST', 'http://localhost:3000/urls');
-            xhttp.setRequestHeader('Content-Type', 'application/json');
-            //xhttp.send(new URLSearchParams.append('url', url));
-            xhttp.send(JSON.stringify(payload));
+            getUserInfo().then((userInfo) => {
+                var payload = { 
+                    userId: userInfo.userID,
+                    addrURL: url, 
+                    title: tabs[0].title,
+                    highlight: clickInfo.selectionText
+                    //label: "General"
+                };
+                console.log(payload);
+        
+                xhttp.onreadystatechange = function() {
+                    console.log('callback called');
+                    if (xhttp.readyState == XMLHttpRequest.DONE) {
+                        console.log(xhttp.responseText);
+                    }
+                };
+        
+                xhttp.open('POST', 'http://localhost:3000/urls');
+                xhttp.setRequestHeader('Content-Type', 'application/json');
+                //xhttp.send(new URLSearchParams.append('url', url));
+                xhttp.send(JSON.stringify(payload));
+            }).catch((error) => {
+                console.log(error);
+            });
     
         });
     }

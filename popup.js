@@ -1,16 +1,20 @@
 window.name = "myPopup";
 var loggedIn = false;
 console.log(window.name);
+//import {getUserInfo} from 'module';
 
 var loginButton = document.createElement("button");
 loginButton.innerHTML = "Log in";
 loginButton.addEventListener("click", function () {
-    loginUser().then(function (userInfo) {
+    loginUser().then((userInfo) => {
         renderLoggedIn(userInfo);
     }, function (error) {
         console.log(error);
     });
 });
+
+var loginButton2 = document.createElement("div");
+loginButton2.className = "login";
 
 var logoutButton = document.createElement("button");
 logoutButton.innerHTML = "Log out";
@@ -49,21 +53,27 @@ function renderLoggedOut() {
     var img = document.getElementById("picture"),
         div = document.getElementById("buttons"),
         p = document.createElement("p");
+        p2 = document.createElement("p");
     
     img.src = "images/get_started128.png";
     img.className = "logo";
     
     div.innerHTML = "";
+
+    p2.innerHTML = "Welcome to SaveSearcher"
+    p2.className = "welcome"
     
-    p.innerHTML = "Login to Google to Begin!";
+    p.innerHTML = "Sign in with Google to Begin!";
     
+    div.appendChild(p2);
     div.appendChild(p);
     div.appendChild(loginButton);
+    div.appendChild(loginButton2);
     
     loggedIn = false;
 }
 
-initialize().then(function (result) {
+getUserInfo().then(function (result) {
     console.log(result);
     loggedIn = true;
     result = [result.givenName, result.userID, result.imgSRC];

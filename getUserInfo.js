@@ -7,7 +7,7 @@ function isEmpty(obj) {
     return true;
 }
 
-function initialize() {
+function getUserInfo() {
     return new Promise(function(resolve, reject) {
         chrome.storage.local.get(['givenName', 'userID', 'imgSRC'], function(result) {
             console.log(result);

@@ -6,21 +6,55 @@ module.exports = function (app, db) {
 	var ObjectID = require('mongodb').ObjectID;
 	var bodyParser = require('body-parser');
 	var jsonParser = bodyParser.json();
+	var inspector = require('schema-inspector');
+
+	// Sanitization Schema
+	var userSelectionSanitization = {
+		type: 'object',
+		properties: {
+			userId: { type: 'string', rules: ['trim'] },
+			addrURL: { type: 'string'},
+			title: {type: 'string'},
+			highlight: { type: 'string'},
+			label: {type: 'string', rules: ['trim', 'lower'], optional: 'true', def: 'general'}
+		}
+	};
+
+	// Validation schema
+	var userSelectionValidation = {
+		type: 'object',
+		properties: {
+			userId: { type: 'string', minLength: 1 },
+			addrURL: { type: 'string', minLength: 1, pattern: 'url'},
+			title: {type: 'string', minLength: 1},
+			highlight: { type: 'string', minLength: 1},
+			label: {type: 'string', minLength: 1}
+		}
+	};
 
 	app.post('/urls', jsonParser, (req, res) => {
 		//const url = {url: req.body.url};
-		if (req.body && req.body.addrURL) {
-			db.collection('url').insert(req.body, (err, result) => {
-				if (err) {
-					res.send({ 'error': 'An error has occurred' });
-				} else {
-					// res.statusCode = 600;
-					// res.setHeader('Content-Type', 'application/json');
-					// res.setHeader('x-VarunHeader', 'silly');
-					res.send(result.ops[0]);
-				}
-			});
+		if (req.body) {
+			inspector.sanitize(userSelectionSanitization, req.body);
+			var result = inspector.validate(userSelectionValidation, req.body);
+			if (result.valid) {
+				db.collection('url').insert(req.body, (err, result) => {
+					if (err) {
+						res.statusCode = 500;
+						res.send({ 'error': 'An error has occurred' });
+					} else {
+						// res.statusCode = 600;
+						// res.setHeader('Content-Type', 'application/json');
+						// res.setHeader('x-VarunHeader', 'silly');
+						res.send(result.ops[0]);
+					}
+				});
+			} else {
+				res.statusCode = 400;
+				res.send(result.error[0]);
+			}
 		} else {
+			res.statusCode = 400;
 			res.send({ 'error': 'Payload empty' });
 		}
 
