@@ -1,5 +1,6 @@
 let searchButton  = document.getElementById('search');
-let textArea = document.getElementById('searchTextArea');
+//let textArea = document.getElementById('searchTextArea');
+let textArea = document.getElementById('searchInput');
 
 searchButton.onclick = function() {
 	var searchText = textArea.value;
@@ -12,7 +13,11 @@ searchButton.onclick = function() {
 			var response = JSON.parse(xhttp.responseText);
 			console.log(response);
 			console.log(typeof response);
-			populateList(response, searchText);
+			if (response.length != 0) {
+				populateList(response, searchText);
+			} else {
+				noResults();
+			}
 		}
 	};
 
@@ -37,11 +42,22 @@ function populateList(list, searchText) {
 		a.setAttribute("href", list[i].addrURL);
 		a.setAttribute("target", "_blank");
 		a.innerHTML = list[i].title;
+		a.className = "li-title";
+
 		p.innerHTML = highlightWords(list[i].highlight, searchText);
+		p.className = "li-p";
+
+		if (i % 2 != 0) {
+			li.className = "li-highlight";
+		}
+		
 		li.appendChild(a);
 		li.appendChild(p);
 		ul.appendChild(li);
 	}
+
+	//this will select the text after a search
+	//textArea.select();
 }
 
 function highlightWords(str, search) {
@@ -59,4 +75,20 @@ function highlightWords(str, search) {
 	}
 	
 	return str;
+}
+
+function noResults() {
+	var ul = document.getElementById('urlList');
+
+	//clear the contents of the last search
+	ul.innerHTML = "";
+
+	var li = document.createElement("li");
+	var p = document.createElement("p");
+
+	p.innerHTML = "No results found - Please check spelling errors and punctuation such as apostrophes";
+	p.className = "li-p";
+
+	li.appendChild(p);
+	ul.appendChild(li);
 }

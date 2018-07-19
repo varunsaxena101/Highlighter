@@ -5,6 +5,7 @@ console.log(window.name);
 
 var loginButton = document.createElement("button");
 loginButton.innerHTML = "Log in";
+loginButton.className = "btn btn-login";
 loginButton.addEventListener("click", function () {
     loginUser().then((userInfo) => {
         renderLoggedIn(userInfo);
@@ -13,11 +14,9 @@ loginButton.addEventListener("click", function () {
     });
 });
 
-var loginButton2 = document.createElement("div");
-loginButton2.className = "login";
-
 var logoutButton = document.createElement("button");
 logoutButton.innerHTML = "Log out";
+logoutButton.className = "btn btn-login";
 logoutButton.addEventListener("click", function () {
     chrome.storage.local.remove(['givenName', 'userID', 'imgSRC']);
     renderLoggedOut();
@@ -37,7 +36,7 @@ function renderLoggedIn(userInfo) {
 
     searchButton.innerHTML = "Search Saves";
     searchButton.href = 'searchPage.html';
-    searchButton.className = 'button';
+    searchButton.className = 'btn btn-search';
     searchButton.target = "_blank";
 
     p.innerHTML = "Hello, " + userInfo[0];
@@ -68,7 +67,6 @@ function renderLoggedOut() {
     div.appendChild(p2);
     div.appendChild(p);
     div.appendChild(loginButton);
-    div.appendChild(loginButton2);
     
     loggedIn = false;
 }
