@@ -13,7 +13,9 @@ searchButton.onclick = function() {
 			var response = JSON.parse(xhttp.responseText);
 			console.log(response);
 			console.log(typeof response);
-			if (response.length != 0) {
+			if (response.error) {
+				alert("You are not logged in!");
+			} else if (response.length != 0) {
 				populateList(response, searchText);
 			} else {
 				noResults();
@@ -21,12 +23,13 @@ searchButton.onclick = function() {
 		}
 	};
 
-	var params = "search=" + searchText;
-	var targetURL = 'http://localhost:3000/urls?' + params; 
-	xhttp.open("GET", targetURL);
-	xhttp.setRequestHeader('Content-Type', 'application/json');
-	xhttp.send();
-	
+	chrome.storage.local.get('token', function (result) {
+		var params = "search=" + searchText + "&token=" + result.token;
+		var targetURL = 'http://localhost:3000/urls?' + params;
+		xhttp.open("GET", targetURL);
+		xhttp.setRequestHeader('Content-Type', 'application/json');
+		xhttp.send();
+	});
 };
 
 function populateList(list, searchText) {
@@ -86,7 +89,7 @@ function noResults() {
 	var li = document.createElement("li");
 	var p = document.createElement("p");
 
-	p.innerHTML = "No results found - Please check spelling errors and punctuation such as apostrophes";
+	p.innerHTML = "No results found - Please check spelling errors and punctuation such as apostrophes.";
 	p.className = "li-p";
 
 	li.appendChild(p);

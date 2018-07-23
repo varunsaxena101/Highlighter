@@ -18,7 +18,11 @@ var logoutButton = document.createElement("button");
 logoutButton.innerHTML = "Log out";
 logoutButton.className = "btn btn-login";
 logoutButton.addEventListener("click", function () {
-    chrome.storage.local.remove(['givenName', 'userID', 'imgSRC']);
+    chrome.storage.local.get('token', (result) => {
+        console.log(result);
+        deleteServerToken(result.token);
+    })
+    chrome.storage.local.remove(['givenName', 'userID', 'imgSRC', 'token']);
     renderLoggedOut();
 });
 

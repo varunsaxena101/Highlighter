@@ -7,16 +7,17 @@ module.exports = function (app, db) {
 	var bodyParser = require('body-parser');
 	var jsonParser = bodyParser.json();
 	var inspector = require('schema-inspector');
+	var fetch = require('node-fetch');
 
 	// Sanitization Schema
 	var userSelectionSanitization = {
 		type: 'object',
 		properties: {
 			userId: { type: 'string', rules: ['trim'] },
-			addrURL: { type: 'string'},
-			title: {type: 'string'},
-			highlight: { type: 'string'},
-			label: {type: 'string', rules: ['trim', 'lower'], optional: 'true', def: 'general'}
+			addrURL: { type: 'string' },
+			title: { type: 'string' },
+			highlight: { type: 'string' },
+			label: { type: 'string', rules: ['trim', 'lower'], optional: 'true', def: 'general' }
 		}
 	};
 
@@ -25,13 +26,30 @@ module.exports = function (app, db) {
 		type: 'object',
 		properties: {
 			userId: { type: 'string', minLength: 1 },
-			addrURL: { type: 'string', minLength: 1, pattern: 'url'},
-			title: {type: 'string', minLength: 1},
-			highlight: { type: 'string', minLength: 1},
-			label: {type: 'string', minLength: 1}
+			addrURL: { type: 'string', minLength: 1, pattern: 'url' },
+			title: { type: 'string', minLength: 1 },
+			highlight: { type: 'string', minLength: 1 },
+			label: { type: 'string', minLength: 1 }
 		}
 	};
 
+	var searchSanitization = {
+		type: 'object',
+		properties: {
+			search: { type: 'string', rules: ['trim'] },
+			token: { type: 'string' }
+		}
+	}
+
+	var searchValidation = {
+		type: 'object',
+		properties: {
+			search: { type: 'string', minLength: 1 },
+			token: { type: 'string', minLength: 1 }
+		}
+	}
+
+	//adds an entry to the database
 	app.post('/urls', jsonParser, (req, res) => {
 		//const url = {url: req.body.url};
 		if (req.body) {
@@ -60,67 +78,112 @@ module.exports = function (app, db) {
 
 	});
 
+	//Searches database for a search request
 	app.get('/urls', (req, res) => {
-		/*
-		const id = req.params.id;
-		const details = { '_id': new ObjectID(id) };
-		db.collection('url').findOne(details, (err, item) => {
-			if (err) {
-				res.send({ 'error': 'An error has occurred' });
-			} else {
-				res.send(item);
-			}
-		});
-		*/
+		inspector.sanitize(searchSanitization, req.query);
+		var result = inspector.validate(searchValidation, req.query);
+		if (result.valid) {
+			var query = req.query.search;
+			var token = req.query.token;
+			token = parseInt(token);
 
-		var query = req.query.search;
-		var test = [];
+			const col = db.collection("users");
+			var mongoQuery = {
+				'token': {$eq: token}
+			};
 
-		const col = db.collection("url");
-		var mongoQuery = {
-			$text: {
-				$search: query
-			}
-		};
-
-		var exclude = {
-			_id: 0
-		};
-
-		col.find(mongoQuery, exclude).toArray(function (err, docs) {
-			console.log(docs);
-			res.send(docs);
-		});
-
-
-		// var item1 = {
-		// 	"addrURL": "https://www.theverge.com/2018/6/11/17448702/ford-self-driving-car-food-delivery-miami-postmates",
-		// 	"title": "Ford\u2019s \u2018self-driving\u2019 vans are now delivering food in Miami - The Verge",
-		// 	"highlight": "Ford has been using Miami as a test bed for its self-driving vehicles since earlier this year. And more recently, the auto giant joined with Postmates to see how people ordering takeout food would interact with an autonomous delivery van."
-		// };
-
-		// test.push(item1);
-
-		// var item2 = {
-		// 	"addrURL": "https://medium.com/@tommycm/terrifying-fish-from-hell-an-essay-about-lampreys-733226c8e14a",
-		// 	"title": "Lamprey: The World\u2019s Most Terrifying Fish \u2013 Tom Mitchell \u2013 Medium",
-		// 	"highlight": "A nice retort, sure, but less comprehensible if you\u2019ve ever seen a lamprey. There are few animals less deserving of an owner\u2019s tears. In fact, the only connection you\u2019re likely to make with one of these fish is if it sinks its many hundreds of teeth into your flesh."
-		// }
-
-		// test.push(item2);
-
-		// var item3 = {
-		// 	"addrURL": "http://www.nba.com/article/2018/06/12/report-toronto-raptors-hire-nick-nurse-new-coach",
-		// 	"title": "Reports: Toronto Raptors hiring Nick Nurse as next coach | NBA.com",
-		// 	"highlight": "The Toronto Raptors didn't have to look far to name their next coach. ESPN's Adrian Wojnarowski reports that the Raptors are hiring current Raptors assistant Nick Nurse as their new coach."
-		// }
-
-		// test.push(item3);
-		// res.send(allDocs);
-		/*
-		var response = { 'urlList': ['http://www.nba.com', 'http://www.cnn.com', 'http://google.com', 'http://gmail.com', 'http://something.com', 'http://example.com'] };
-		res.send(response);
-		*/
+			col.findOne(mongoQuery).then((result) => {
+				console.log(result);
+				if (result == null) {
+					res.statusCode = 401;
+					res.send({ "error": "Unauthorized access to server (invalid token)" });
+				} else {
+					const col = db.collection("url");
+					var mongoQuery = {
+						$text: {
+							$search: query
+						}
+					};
+	
+					var exclude = {
+						_id: 0
+					};
+	
+					col.find(mongoQuery, exclude).toArray(function (err, docs) {
+						console.log(docs);
+						res.send(docs);
+					});
+				}
+			});
+		} else {
+			res.statusCode = 400;
+			res.send(result.error[0]);
+		}
 	});
 
+	//creates and returns a token to validate requests to server
+	app.get('/create-token', (req, res) => {
+		var oauthToken = req.query.oauthToken;
+
+		let init = {
+			method: 'GET',
+			async: true,
+			headers: {
+				Authorization: 'Bearer ' + oauthToken,
+				'Content-Type': 'application/json'
+			},
+			'contentType': 'json'
+		};
+
+		fetch(
+			'https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos&key=AIzaSyCjOXjhZ-46NNQIYE5R0TgG6XvBrWd5JMk',
+			init)
+			.then((response) => response.json())
+			.then(function (data) {
+				console.log(data);
+				if (data.error) {
+					throw new Error("Oauth token is not valid");
+				}
+
+				var userID = 'google:' + data.names[0].metadata.source.id;
+				var data = {
+					'user': userID,
+					'token': Date.now()
+				}
+
+				db.collection('users').insert(data, (err, result) => {
+					if (err) {
+						res.statusCode = 500;
+						res.send({ 'error': 'An error has occurred' });
+					} else {
+						res.send(result.ops[0]);
+					}
+				});
+			}).catch((error) => {
+				res.statusCode = 401;
+				res.send({ 'error': error });
+			});
+	});
+
+	//remove a token from the server when the user logs out
+	app.delete('/delete-token', (req, res) => {
+		var token = req.query.token;
+		token = parseInt(token);
+
+		const col = db.collection("users");
+		var mongoQuery = {
+			'token': { $eq: token }
+		};
+
+		col.findOneAndDelete(mongoQuery).then((result) => {
+			if (result.value != null) {
+				res.send(result);
+			} else {
+				//token doesn't exist
+				res.statusCode = 400;
+				res.send(result);
+			}
+		});
+
+	});
 };

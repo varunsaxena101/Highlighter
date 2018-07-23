@@ -5,6 +5,7 @@ function loginUser() {
         chrome.identity.getAuthToken({ interactive: true }, function (token) {
             console.log(token);
             userAuthToken = token;
+
             let init = {
                 method: 'GET',
                 async: true,
@@ -20,6 +21,12 @@ function loginUser() {
                 .then((response) => response.json())
                 .then(function (data) {
                     console.log(data);
+
+                    if (data.error) {
+                        throw new Error("User did not approve access");
+                    }
+
+                    getServerToken(userAuthToken);
 
                     var givenName = data.names[0].givenName;
                     var userID = 'google:' + data.names[0].metadata.source.id;
@@ -63,7 +70,61 @@ function loginUser() {
                     chrome.identity.removeCachedAuthToken({ 'token': userAuthToken }, function () {
                         userAuthToken = undefined;
                     });
+                }).catch((error) => {
+                    console.log(error);
                 });
         });
     });
+}
+
+//gets the access token to the server and stores in chrome.storage
+function getServerToken(token) {
+    //send token to server
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == XMLHttpRequest.DONE) {
+            console.log(xhttp.responseText);
+			var response = JSON.parse(xhttp.responseText);
+            console.log(response);
+            console.log(response.token);
+
+            chrome.storage.local.set({'token': response.token});
+            // chrome.storage.local.get('token', function(result) {
+            //     console.log(result);
+            // });
+		}
+	};
+
+	var params = "?oauthToken=" + token;
+	var targetURL = 'http://localhost:3000/create-token' + params; 
+	xhttp.open("GET", targetURL);
+	xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.send();
+      
+}
+
+function deleteServerToken(token) {
+    //send token to server
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function() {
+		if (xhttp.readyState == XMLHttpRequest.DONE) {
+            console.log(xhttp.responseText);
+			var response = JSON.parse(xhttp.responseText);
+            console.log(response);
+            console.log(response.token);
+
+            chrome.storage.local.set({'token': response.token});
+            // chrome.storage.local.get('token', function(result) {
+            //     console.log(result);
+            // });
+		}
+	};
+
+	var params = "?token=" + token;
+	var targetURL = 'http://localhost:3000/delete-token' + params; 
+	xhttp.open("DELETE", targetURL);
+	xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.send();
 }
