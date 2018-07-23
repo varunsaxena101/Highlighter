@@ -90,18 +90,17 @@ function getServerToken(token) {
             console.log(response.token);
 
             chrome.storage.local.set({'token': response.token});
-            // chrome.storage.local.get('token', function(result) {
-            //     console.log(result);
-            // });
+            chrome.storage.local.get('token', function(result) {
+                console.log(result);
+            });
 		}
 	};
 
 	var params = "?oauthToken=" + token;
 	var targetURL = 'http://localhost:3000/create-token' + params; 
 	xhttp.open("GET", targetURL);
-	xhttp.setRequestHeader('Content-Type', 'application/json');
-    xhttp.send();
-      
+    xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.send();    
 }
 
 function deleteServerToken(token) {

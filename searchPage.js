@@ -23,11 +23,14 @@ searchButton.onclick = function() {
 		}
 	};
 
-	chrome.storage.local.get('token', function (result) {
-		var params = "search=" + searchText + "&token=" + result.token;
+	chrome.storage.local.get(['token', 'userID'], function (result) {
+		console.log(result);
+		var params = "search=" + searchText;
 		var targetURL = 'http://localhost:3000/urls?' + params;
 		xhttp.open("GET", targetURL);
 		xhttp.setRequestHeader('Content-Type', 'application/json');
+		xhttp.setRequestHeader('Authorization', 'Bearer ' + result.token);
+		xhttp.setRequestHeader('X-id', result.userID);
 		xhttp.send();
 	});
 };

@@ -37,7 +37,6 @@ module.exports = function (app, db) {
 		type: 'object',
 		properties: {
 			search: { type: 'string', rules: ['trim'] },
-			token: { type: 'string' }
 		}
 	}
 
@@ -45,7 +44,6 @@ module.exports = function (app, db) {
 		type: 'object',
 		properties: {
 			search: { type: 'string', minLength: 1 },
-			token: { type: 'string', minLength: 1 }
 		}
 	}
 
@@ -84,19 +82,24 @@ module.exports = function (app, db) {
 		var result = inspector.validate(searchValidation, req.query);
 		if (result.valid) {
 			var query = req.query.search;
-			var token = req.query.token;
+
+			var token = req.headers.authorization;
+			console.log(token);
+			token = token.split(' ')[1];
 			token = parseInt(token);
+			var id = req.headers["x-id"];
+			console.log(id);
 
 			const col = db.collection("users");
 			var mongoQuery = {
-				'token': {$eq: token}
+				'user': {$eq: id}
 			};
 
 			col.findOne(mongoQuery).then((result) => {
 				console.log(result);
-				if (result == null) {
+				if (result == null || result.token != token) {
 					res.statusCode = 401;
-					res.send({ "error": "Unauthorized access to server (invalid token)" });
+					res.send({ "error": "Unauthorized access to server" });
 				} else {
 					const col = db.collection("url");
 					var mongoQuery = {
