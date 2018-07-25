@@ -14,6 +14,7 @@ searchButton.onclick = function() {
 			console.log(response);
 			console.log(typeof response);
 			if (response.error) {
+				document.getElementById('urlList').innerHTML = "Error - Please sign in to search!";
 				alert("You are not logged in!");
 			} else if (response.length != 0) {
 				populateList(response, searchText);

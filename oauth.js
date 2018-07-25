@@ -78,7 +78,7 @@ function loginUser() {
 }
 
 //gets the access token to the server and stores in chrome.storage
-function getServerToken(token) {
+function getServerToken(oauthToken) {
     //send token to server
     var xhttp = new XMLHttpRequest();
 
@@ -96,7 +96,7 @@ function getServerToken(token) {
 		}
 	};
 
-	var params = "?oauthToken=" + token;
+	var params = "?oauthToken=" + oauthToken;
 	var targetURL = 'http://localhost:3000/create-token' + params; 
 	xhttp.open("GET", targetURL);
     xhttp.setRequestHeader('Content-Type', 'application/json');

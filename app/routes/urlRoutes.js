@@ -92,7 +92,7 @@ module.exports = function (app, db) {
 
 			const col = db.collection("users");
 			var mongoQuery = {
-				'user': {$eq: id}
+				'user': { $eq: id }
 			};
 
 			col.findOne(mongoQuery).then((result) => {
@@ -107,11 +107,11 @@ module.exports = function (app, db) {
 							$search: query
 						}
 					};
-	
+
 					var exclude = {
 						_id: 0
 					};
-	
+
 					col.find(mongoQuery, exclude).toArray(function (err, docs) {
 						console.log(docs);
 						res.send(docs);
@@ -149,23 +149,43 @@ module.exports = function (app, db) {
 				}
 
 				var userID = 'google:' + data.names[0].metadata.source.id;
-				var data = {
-					'user': userID,
-					'token': Date.now()
+
+				var col = db.collection("users");
+
+				var mongoQuery = {
+					'user': { $eq: userID }
+				};
+
+				var sort = [
+					['_id', 'asc']
+				];
+
+				var update = {
+					$set: { 'token': Date.now() }
 				}
 
-				db.collection('users').insert(data, (err, result) => {
+				var options = {
+					new: true,
+					upsert: true
+				};
+
+				col.findAndModify(mongoQuery, sort, update, options, (err, result) => {
+					console.log(result);
 					if (err) {
 						res.statusCode = 500;
-						res.send({ 'error': 'An error has occurred' });
+						res.send({ 'error': err });
 					} else {
-						res.send(result.ops[0]);
+						console.log(result.value)
+						res.send(result.value);
 					}
 				});
-			}).catch((error) => {
+
+			}).catch((err) => {
+				console.log(err);
 				res.statusCode = 401;
-				res.send({ 'error': error });
+				res.send({'Error': err.message});
 			});
+
 	});
 
 	//remove a token from the server when the user logs out
@@ -187,6 +207,5 @@ module.exports = function (app, db) {
 				res.send(result);
 			}
 		});
-
 	});
 };
