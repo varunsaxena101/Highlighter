@@ -72,6 +72,7 @@ function loginUser() {
                     });
                 }).catch((error) => {
                     console.log(error);
+                    reject(error);
                 });
         });
     });
@@ -114,16 +115,16 @@ function deleteServerToken(token) {
             console.log(response);
             console.log(response.token);
 
-            chrome.storage.local.set({'token': response.token});
-            // chrome.storage.local.get('token', function(result) {
-            //     console.log(result);
-            // });
+            chrome.storage.local.remove('token');
+            chrome.storage.local.get('token', function(result) {
+                console.log(result);
+            });
 		}
 	};
 
-	var params = "?token=" + token;
-	var targetURL = 'http://localhost:3000/delete-token' + params; 
+	var targetURL = 'http://localhost:3000/delete-token'; 
 	xhttp.open("DELETE", targetURL);
-	xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.setRequestHeader('Authorization', 'Bearer ' + token);
     xhttp.send();
 }

@@ -190,7 +190,9 @@ module.exports = function (app, db) {
 
 	//remove a token from the server when the user logs out
 	app.delete('/delete-token', (req, res) => {
-		var token = req.query.token;
+		var token = req.headers.authorization;
+		console.log(token);
+		token = token.split(' ')[1];
 		token = parseInt(token);
 
 		const col = db.collection("users");
