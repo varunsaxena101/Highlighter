@@ -104,9 +104,16 @@ module.exports = function(app, db) {
         } else {
           const col = db.collection('url');
           const mongoQuery = {
-            $text: {
-              $search: query
-            }
+            $and: [
+              {
+                $text: {
+                  $search: query
+                }
+              },
+              {
+                "userId": id
+              }
+            ]
           };
 
           const exclude = {

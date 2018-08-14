@@ -1,7 +1,7 @@
 {
-  "name": "highlighter",
+  "name": "searchstash",
   "version": "1.0.0",
-  "description": "Allows user to highlight then search later",
+  "description": "Save some text from a webpage and look it up later",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

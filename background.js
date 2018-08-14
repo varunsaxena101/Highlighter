@@ -25,7 +25,7 @@ function getUserInfo() {
 
 const contextMenuItem = {
     'id': 'save',
-    'title': 'Save for Search',
+    'title': 'Stash It!',
     'contexts': ['selection']
 };
 

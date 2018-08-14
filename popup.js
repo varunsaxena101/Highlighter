@@ -38,7 +38,7 @@ function renderLoggedIn(userInfo) {
 
     div.innerHTML = '';
 
-    searchButton.innerHTML = 'Search Saves';
+    searchButton.innerHTML = 'Search Stash';
     searchButton.href = 'searchPage.html';
     searchButton.className = 'btn btn-search';
     searchButton.target = '_blank';
@@ -63,7 +63,7 @@ function renderLoggedOut() {
 
     div.innerHTML = '';
 
-    p2.innerHTML = 'Welcome to SaveSearcher';
+    p2.innerHTML = 'Welcome to SearchStash';
     p2.className = 'welcome';
 
     p.innerHTML = 'Sign in with Google to Begin!';
