@@ -1,8 +1,8 @@
-var userAuthToken;
+let userAuthToken;
 
 function loginUser() {
     return new Promise(function(resolve, reject) {
-        chrome.identity.getAuthToken({ interactive: true }, function (token) {
+        chrome.identity.getAuthToken({interactive: true}, function(token) {
             console.log(token);
             userAuthToken = token;
 
@@ -10,27 +10,26 @@ function loginUser() {
                 method: 'GET',
                 async: true,
                 headers: {
-                    Authorization: 'Bearer ' + token,
+                    'Authorization': 'Bearer ' + token,
                     'Content-Type': 'application/json'
-                },
-                'contentType': 'json'
+                }
             };
             fetch(
                 'https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos&key=AIzaSyCjOXjhZ-46NNQIYE5R0TgG6XvBrWd5JMk',
                 init)
                 .then((response) => response.json())
-                .then(function (data) {
+                .then(function(data) {
                     console.log(data);
 
                     if (data.error) {
-                        throw new Error("User did not approve access");
+                        throw new Error('User did not approve access');
                     }
 
                     getServerToken(userAuthToken);
 
-                    var givenName = data.names[0].givenName;
-                    var userID = 'google:' + data.names[0].metadata.source.id;
-                    var imgSrc = data.photos[0].url;
+                    const givenName = data.names[0].givenName;
+                    const userID = 'google:' + data.names[0].metadata.source.id;
+                    const imgSrc = data.photos[0].url;
 
                     userInfo = [givenName, userID, imgSrc];
 
@@ -38,36 +37,38 @@ function loginUser() {
                     console.log(userID);
                     console.log(imgSrc);
 
-                    //set user info in chrome storage
-                    chrome.storage.local.set({'givenName': givenName, 'userID': userID, 'imgSRC': imgSrc});
-                    // chrome.storage.local.get(['givenName', 'userID', 'imgSRC'], function(result) {
-                    //     console.log(result);
-                    // });
-
                     if (userInfo) {
                         resolve(userInfo);
                     } else {
-                        reject(Error("There was no userInfo"));
+                        reject(Error('There was no userInfo'));
                     }
+
+                    // set user info in chrome storage
+                    chrome.storage.local.set({'givenName': givenName,
+                    'userID': userID, 'imgSRC': imgSrc});
+                    // chrome.storage.local.get(['givenName',
+                    // 'userID', 'imgSRC'], function(result) {
+                    //     console.log(result);
+                    // });
 
                     let init = {
                         method: 'GET',
                         async: true,
                         headers: {
-                            Authorization: 'Bearer ' + userAuthToken,
+                            'Authorization': 'Bearer ' + userAuthToken,
                             'Content-Type': 'application/json'
-                        },
-                        'contentType': 'json'
+                        }
                     };
                     fetch(
                         'https://accounts.google.com/o/oauth2/revoke?token=' + userAuthToken,
                         init)
                         .then((response) => response.json())
-                        .then(function (data) {
+                        .then(function(data) {
                             console.log(data);
                         });
 
-                    chrome.identity.removeCachedAuthToken({ 'token': userAuthToken }, function () {
+                    chrome.identity.removeCachedAuthToken(
+                        {'token': userAuthToken}, function() {
                         userAuthToken = undefined;
                     });
                 }).catch((error) => {
@@ -78,15 +79,15 @@ function loginUser() {
     });
 }
 
-//gets the access token to the server and stores in chrome.storage
+// gets the access token to the server and stores in chrome.storage
 function getServerToken(oauthToken) {
-    //send token to server
-    var xhttp = new XMLHttpRequest();
+    // send token to server
+    const xhttp = new XMLHttpRequest();
 
     xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == XMLHttpRequest.DONE) {
             console.log(xhttp.responseText);
-			var response = JSON.parse(xhttp.responseText);
+			const response = JSON.parse(xhttp.responseText);
             console.log(response);
             console.log(response.token);
 
@@ -97,21 +98,21 @@ function getServerToken(oauthToken) {
 		}
 	};
 
-	var params = "?oauthToken=" + oauthToken;
-	var targetURL = 'http://localhost:3000/create-token' + params; 
-	xhttp.open("GET", targetURL);
+	const params = '?oauthToken=' + oauthToken;
+	const targetURL = 'https://localhost:3000/create-token' + params;
+	xhttp.open('GET', targetURL);
     xhttp.setRequestHeader('Content-Type', 'application/json');
-    xhttp.send();    
+    xhttp.send();
 }
 
 function deleteServerToken(token) {
-    //send token to server
-    var xhttp = new XMLHttpRequest();
+    // send token to server
+    const xhttp = new XMLHttpRequest();
 
     xhttp.onreadystatechange = function() {
 		if (xhttp.readyState == XMLHttpRequest.DONE) {
             console.log(xhttp.responseText);
-			var response = JSON.parse(xhttp.responseText);
+			const response = JSON.parse(xhttp.responseText);
             console.log(response);
             console.log(response.token);
 
@@ -122,8 +123,8 @@ function deleteServerToken(token) {
 		}
 	};
 
-	var targetURL = 'http://localhost:3000/delete-token'; 
-	xhttp.open("DELETE", targetURL);
+	const targetURL = 'https://localhost:3000/delete-token';
+	xhttp.open('DELETE', targetURL);
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.setRequestHeader('Authorization', 'Bearer ' + token);
     xhttp.send();
