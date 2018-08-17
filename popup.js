@@ -57,8 +57,9 @@ function renderLoggedOut() {
     const div = document.getElementById('buttons');
     const p = document.createElement('p');
     const p2 = document.createElement('p');
+    const terms = document.createElement('p');
 
-    img.src = 'images/get_started128.png';
+    img.src = 'images/logo_128.png';
     img.className = 'logo';
 
     div.innerHTML = '';
@@ -68,9 +69,13 @@ function renderLoggedOut() {
 
     p.innerHTML = 'Sign in with Google to Begin!';
 
+    terms.innerHTML = 'By logging in I agree to the Terms of Service';
+    terms.className = 'terms-of-service';
+
     div.appendChild(p2);
     div.appendChild(p);
     div.appendChild(loginButton);
+    div.appendChild(terms);
 
     loggedIn = false;
 }

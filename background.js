@@ -57,7 +57,7 @@ chrome.contextMenus.onClicked.addListener(function(clickInfo) {
                     }
                 };
 
-                xhttp.open('POST', 'https://localhost:3000/urls');
+                xhttp.open('POST', 'https://api.searchstash.com/urls');
                 xhttp.setRequestHeader('Content-Type', 'application/json');
                 // xhttp.send(new URLSearchParams.append('url', url));
                 xhttp.send(JSON.stringify(payload));
